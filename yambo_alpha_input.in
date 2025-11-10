@@ -1,0 +1,58 @@
+#                                                                     
+#  /$$     /$$ /$$$$$$  /$$      /$$ /$$$$$$$   /$$$$$$               
+# |  $$   /$$//$$__  $$| $$$    /$$$| $$__  $$ /$$__  $$              
+#  \  $$ /$$/| $$  \ $$| $$$$  /$$$$| $$  \ $$| $$  \ $$              
+#   \  $$$$/ | $$$$$$$$| $$ $$/$$ $$| $$$$$$$ | $$  | $$              
+#    \  $$/  | $$__  $$| $$  $$$| $$| $$__  $$| $$  | $$              
+#     | $$   | $$  | $$| $$\  $ | $$| $$  \ $$| $$  | $$              
+#     | $$   | $$  | $$| $$ \/  | $$| $$$$$$$/|  $$$$$$/              
+#     |__/   |__/  |__/|__/     |__/|_______/  \______/               
+#                                                                     
+# Version 5.3.0 Revision 23927 Hash (prev commit) 1730222ea           
+#                    Branch is master                                 
+#              MPI+OpenMP+HDF5_MPI_IO Build                           
+#                http://www.yambo-code.eu                             
+#
+rim_cut                          # [R] Coulomb potential
+infver                           # [R] Input file variables verbosity
+optics                           # [R] Linear Response optical properties
+chi                              # [R][CHI] Dyson equation for Chi.
+dipoles                          # [R] Oscillator strenghts (or dipoles)
+ElecTemp= 0.0646         eV    # Electronic Temperature
+BoseTemp= 0.0646         eV    # Bosonic Temperature
+#DegFix                        # Force the code to impose the energy levels to respect their degeneracy
+FFTGvecs=  30          Ry    # [FFT] Plane-waves
+DIP_Threads=0                    # [OPENMP/X] Number of threads for dipoles
+X_Threads=0                      # [OPENMP/X] Number of threads for response functions
+RandQpts=1000000                       # [RIM] Number of random q-points in the BZ
+RandGvec= 100                RL    # [RIM] Coulomb interaction RS components
+#QpgFull                       # [F RIM] Coulomb interaction: Full matrix
+% Em1Anys
+ 0.000000 | 0.000000 | 0.000000 |        # [RIM] X Y Z Static Inverse dielectric matrix Anysotropy
+%
+IDEm1Ref=0                       # [RIM] Dielectric matrix reference component 1(x)/2(y)/3(z)
+CUTGeo= "slab Z"                   # [CUT] Coulomb Cutoff geometry: box/cylinder/sphere/ws/slab X/Y/Z/XY..
+% CUTBox
+ 0.000000 | 0.000000 | 0.000000 |        # [CUT] [au] Box sides
+%
+CUTRadius= 0.000000              # [CUT] [au] Sphere/Cylinder radius
+CUTCylLen= 0.000000              # [CUT] [au] Cylinder length
+CUTwsGvec= 0.700000              # [CUT] WS cutoff: number of G to be modified
+#CUTCol_test                   # [CUT] Perform a cutoff test in R-space
+Chimod= "IP"                     # [X] IP/Hartree/ALDA/LRC/PF/BSfxc
+% QpntsRXd
+    1 |  10 |                       # [Xd] Transferred momenta
+%
+% BndsRnXd
+   53 |  76 |                         # [Xd] Polarization function bands
+%
+% EnRngeXd
+  0.001000 | 1.00000 |         eV    # [Xd] Energy range
+%
+% DmRngeXd
+ 0.100000 | 0.100000 |         eV    # [Xd] Damping range
+%
+ETStpsXd= 200                    # [Xd] Total Energy steps
+% LongDrXd
+ 1.000000 | 0.000000 | 0.000000 |        # [Xd] [cc] Electric Field
+%
