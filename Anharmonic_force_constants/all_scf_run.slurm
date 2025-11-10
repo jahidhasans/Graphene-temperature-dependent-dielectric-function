@@ -17,7 +17,7 @@ export PATH=/anvil/projects/x-mch240098/software_installation/qe-7.4.1/bin:$PATH
 
 file=ZG-scf_750.00K_iter_01
 mkdir -p fd_forces/
-for i in {0001..0048}; do
+for i in {0001..00192}; do
    mkdir -p $i
    cd $i
    cp ../C.pbe-hgh.UPF .
