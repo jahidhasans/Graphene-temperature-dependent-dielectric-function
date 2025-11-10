@@ -1,0 +1,16 @@
+&input
+asr = 'crystal',
+flfrc = '750.00K_iter_01.fc',
+flfrq = 'gr_01_441.freq',
+q_in_band_form = .true.
+flvec = 'gr.modes'
+fleig = ' '
+fldyn = ' '
+fd = .true.,
+/
+4
+gG 60
+K  50
+M  40
+gG 0
+

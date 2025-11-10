@@ -1,0 +1,18 @@
+&input
+   asr='all',
+   amass(1) = 12.0107
+   flscf = 'gr.scf.in'
+   flfrc='gr.441all.fc'
+   atm_zg(1) = 'C', 
+   T = 750
+   dim1 = 4, dim2 =4, dim3 =1, incl_qA = .true.
+   compute_error = .true., synch = .true., error_thresh = 0.1, niters=260000000,
+   ASDM = .true.
+/
+&A_ZG
+   iter_idx = 1
+   apply_fd = .false.
+   read_fd_forces = .true.
+   mixing = .false.
+/
+
