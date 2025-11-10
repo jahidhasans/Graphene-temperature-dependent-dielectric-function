@@ -28,10 +28,8 @@ for i in $(seq 1 $expected_total); do
     fi
 done
 
-# Print summary
-echo "------------------------------------"
 echo "Total expected files     : $expected_total"
 echo "Total files found        : $found_count"
 echo "Total missing files      : $missing_count"
 echo "Total empty files        : $empty_count"
-echo "------------------------------------"
+
