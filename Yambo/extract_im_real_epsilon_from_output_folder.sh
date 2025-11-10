@@ -28,7 +28,6 @@ echo "" >> "$energy_output"  # Add newline at the end
 > "$imag_output"
 > "$real_output"
 
-# Use paste one file at a time to build output safely
 for i in {1..729}; do
     imag_col="$temp_dir/imag_$i.tmp"
     real_col="$temp_dir/real_$i.tmp"
@@ -43,8 +42,6 @@ for i in {1..729}; do
         fi
     fi
 done
-
-# Cleanup
 rm -r "$temp_dir"
 
-echo " Done: Imag alpha  $imag_output | Real alpha  $real_output | Energy (eV)  $energy_output"
+echo "Done: Imag alpha $imag_output | Real alpha $real_output | Energy (eV) $energy_output"
