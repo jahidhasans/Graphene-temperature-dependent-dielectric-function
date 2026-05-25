@@ -43,8 +43,8 @@ A working knowledge of the Yambo many-body perturbation theory code is helpful f
 | Software | Version used | Purpose |
 |---|---|---|
 | [Quantum ESPRESSO](https://www.quantum-espresso.org/) | v7.2 | SCF, NSCF, phonons, IFCs (`pw.x`, `ph.x`, `q2r.x`, `matdyn.x`) |
-| EPW / ZG.x | compiled with QE v7.2 | Special displacement generation & ASDM (`ZG.x`) |
-| [Yambo](https://www.yambo-code.eu/) | v5.3 | Many-body dielectric function |
+| EPW / ZG.x | compiled with QE v7.2 | Special displacement method & Anharmonic Special Displacement Method (`ZG.x`) |
+| [Yambo](https://www.yambo-code.eu/) | v5.3 | Many-body Perturbation Theory |
 | Python | ≥ 3.8 | Post-processing and plotting (`matplotlib`, `numpy`) |
 | gnuplot *(optional)* | any recent version | Alternative plotting of phonon dispersions |
 
