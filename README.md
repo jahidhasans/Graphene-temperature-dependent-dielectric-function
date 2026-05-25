@@ -1,10 +1,10 @@
 # Graphene — Temperature-Dependent Dielectric Function
 
 > **Data repository for the manuscript:**  
-> *Temperature-dependent dielectric function of graphene from first principles including anharmonic effects*  
-> J. H. Sagor *et al.* (under review, 2026)
+> *Effect of Temperature-Induced Dielectric Response on Radiative Heat Transfer in the Extreme Near-Field Regime*  
+> J. H. Sagor *et al.* (under review, PRB, 2026)
 
-This repository contains the input files, force-constant data, post-processing scripts, and representative output figures needed to reproduce the main results of the paper. The workflow computes the **anharmonic phonon dispersion** of graphene at finite temperature using the Anharmonic Special Displacement Method (A-SDM) implemented in `ZG.x` (part of Quantum ESPRESSO / EPW), and then feeds the resulting thermally displaced configurations into **Yambo** to obtain the temperature-dependent dielectric function.
+This repository contains the input files, force-constant data, post-processing scripts, and representative output figures needed to reproduce the main results of the paper. The workflow computes the **anharmonic phonon dispersion** of graphene at finite temperature using the Anharmonic Special Displacement Method (ASDM) implemented in `ZG.x` (part of Quantum ESPRESSO / EPW), and then feeds the resulting thermally displaced configurations into **Yambo** to obtain the temperature-dependent dielectric function.
 
 ---
 
@@ -36,22 +36,19 @@ This repository is intended for researchers with **basic familiarity with DFT ca
 
 A working knowledge of the Yambo many-body perturbation theory code is helpful for the dielectric function part (Step 5), but is not strictly required to follow Steps 1–4.
 
-> **Note for newcomers:** If you are new to temperature-dependent DFT-based property calculations, we strongly recommend first working through the official [ZG.x tutorial](https://docs.epw-code.org/doc/TutorialZG.html) (a local copy of the relevant pages is archived in the PDF `Examples_of_calculations_with_ZG.x_EPW_documentation.pdf`). That tutorial walks through the full A-SDM procedure on silicon and zirconium in full detail, which is directly analogous to what is done here for graphene.
-
 ---
 
 ## 2. Software Requirements
 
 | Software | Version used | Purpose |
 |---|---|---|
-| [Quantum ESPRESSO](https://www.quantum-espresso.org/) | v7.2 | SCF, phonons, IFCs (`pw.x`, `ph.x`, `q2r.x`, `matdyn.x`) |
-| EPW / ZG.x | compiled with QE v7.2 | Special displacement generation & A-SDM (`ZG.x`) |
-| [Yambo](https://www.yambo-code.eu/) | v5.x | Many-body dielectric function |
+| [Quantum ESPRESSO](https://www.quantum-espresso.org/) | v7.2 | SCF, NSCF, phonons, IFCs (`pw.x`, `ph.x`, `q2r.x`, `matdyn.x`) |
+| EPW / ZG.x | compiled with QE v7.2 | Special displacement generation & ASDM (`ZG.x`) |
+| [Yambo](https://www.yambo-code.eu/) | v5.3 | Many-body dielectric function |
 | Python | ≥ 3.8 | Post-processing and plotting (`matplotlib`, `numpy`) |
-| gnuplot *(optional)* | any recent | Alternative plotting of phonon dispersions |
+| gnuplot *(optional)* | any recent version | Alternative plotting of phonon dispersions |
 
-**Compiling ZG.x:** After compiling QE, `ZG.x` is built together with `make epw`. The executable is located at `$QE/EPW/ZG/src/ZG.x`. Refer to the EPW documentation for compilation instructions.
-
+**Compiling ZG.x:** After compiling QE, `ZG.x` is built together with `make epw`. The executable is located at `$QE/EPW/ZG/src/ZG.x`. Refer to the [EPW documentation](https://docs.epw-code.org/doc/Installation.html) for compilation instructions.
 ---
 
 ## 3. Repository Structure
@@ -110,7 +107,7 @@ Graphene-temperature-dependent-dielectric-function/
 The overall pipeline is illustrated below. Each step builds on the output of the previous one.
 
 ```
-pw.x (SCF)  →  ph.x + q2r.x (IFCs)  →  ZG.x A-SDM loop  →  pw.x (NSCF on ZG config)  →  Yambo (ε)
+pw.x (SCF)  →  ph.x + q2r.x (IFCs)  →  ZG.x SDM/ASDM loop  →  pw.x (NSCF on ZG config)  →  Yambo (ε,q,T)
 ```
 
 ### Step 1 — Ground-state DFT (QE)
@@ -127,23 +124,23 @@ mpirun -np <N> pw.x -nk <nk> < ZG-scf_441_750.00K.in > ZG-scf_441_750.00K.out
 - k-point mesh: 4×4×1 (coarse grid for ZG; a shifted/finer grid is used for Yambo — see `ZG-nscf_441_750.00K_shifted_grid.in`)
 - Kinetic energy cutoff: see input file
 
-> ⚠️ **Convergence note:** The cutoff energies and k-point meshes used here were converged for the specific pseudopotential provided. **If you use a different pseudopotential, you must redo the convergence study** for both the wavefunction cutoff (`ecutwfc`) and the charge density cutoff (`ecutrho`), as well as the k-point sampling. The same applies if you want to apply this workflow to a different material.
+> ⚠️ **Convergence note:** The cutoff energies and k-point meshes used here were converged for the specific pseudopotential provided. **If you use a different pseudopotential, you must redo the convergence study** for both the wavefunction cutoff (`ecutwfc`) and the charge density cutoff (`ecutrho`), as well as the k-point sampling. For 2D materials like graphene, the vacuum layer thickness between periodic images must also be converged to prevent spurious interlayer interactions. The same applies if you want to apply this workflow to a different material.
 
 ---
 
 ### Step 2 — Harmonic Force Constants (QE)
 
-The harmonic interatomic force constants (IFCs) are the starting point for the A-SDM. They are obtained by running `ph.x` on a 4×4×1 q-point grid, followed by `q2r.x` to Fourier-transform to real space.
+The harmonic interatomic force constants (IFCs) are the starting point for the ASDM. They are obtained by running `ph.x` on a 4×4×1 q-point grid, followed by `q2r.x` to Fourier-transform to real space.
 
 The resulting harmonic IFC file is `Anharmonic_force_constants/gr.441all.fc`.
 
-If you already have converged harmonic IFCs for graphene (e.g., from a previous DFPT calculation), you can skip `ph.x` and feed your `.fc` file directly into the A-SDM loop below. Make sure the q-grid is dense enough to reproduce the correct phonon dispersion before proceeding.
+If you already have converged harmonic IFCs for graphene (e.g., from a previous DFPT calculation), you can skip `ph.x` and feed your `.fc` file directly into the ASDM loop below. Make sure the q-grid is dense enough to reproduce the correct phonon dispersion before proceeding.
 
 ---
 
-### Step 3 — Anharmonic Phonons via A-SDM (ZG.x)
+### Step 3 — Anharmonic Phonons via ASDM (ZG.x)
 
-This is the central step. The A-SDM self-consistently updates the IFCs by iterating between:
+This is the central step. The ASDM self-consistently updates the IFCs by iterating between:
 1. Generating a ZG special displacement configuration at temperature *T*
 2. Running finite-difference SCF calculations on the displaced configuration
 3. Extracting updated IFCs from the calculated forces
@@ -264,9 +261,9 @@ A summary of the parameters that require careful convergence testing is given be
 | Parameter | Where to check | Comment |
 |---|---|---|
 | `ecutwfc` (wavefunction cutoff) | `QE_inputs/*.in` | Must be re-converged for different pseudopotentials |
-| k-point mesh density | `QE_inputs/*.in` | Coarser grids are used for ZG/A-SDM; finer grids for Yambo |
-| Supercell size for A-SDM | `ZG_1.in` (`dim1, dim2, dim3`) | Larger supercells give more accurate ZG configurations; always check size convergence |
-| Number of A-SDM iterations | `ZG_1.in`, `ZG_2.in` | Converge by comparing phonon dispersions across iterations |
+| k-point mesh density | `QE_inputs/*.in` | Coarser grids are used for ZG/ASDM; finer grids for Yambo |
+| Supercell size for ASDM | `ZG_1.in` (`dim1, dim2, dim3`) | Larger supercells give more accurate ZG configurations; always check size convergence |
+| Number of ASDM iterations | `ZG_1.in`, `ZG_2.in` | Converge by comparing phonon dispersions across iterations |
 | Number of empty bands (Yambo) | `yambo_epsilon_input.in` | Affects optical spectra and dielectric function |
 | Yambo k-point grid | `double_grid_mapping.in` | Double-grid helps but coarse + fine grid density must be checked |
 | `NGsBlkXd` (Yambo response matrix size) | `yambo_epsilon_input.in` | Controls completeness of the dielectric response |
@@ -281,12 +278,9 @@ A summary of the parameters that require careful convergence testing is given be
 
 The A-SDM method and ZG.x code are described in detail in the following papers. If you use this data or workflow, please also cite them:
 
-- M. Zacharias and F. Giustino, *Phys. Rev. Research* **2**, 013357 (2020) — Special Displacement Method
-- M. Zacharias and F. Giustino, *Phys. Rev. B* **94**, 075125 (2016) — Original SDM paper
-- M. Zacharias *et al.*, *Phys. Rev. B* **108**, 035155 (2023) — Anharmonic SDM (A-SDM)
-
-The full ZG.x tutorial (Exercises 1–6 covering silicon, Zr, PbTe, graphene, and phonon unfolding) is available at:  
-https://docs.epw-code.org/doc/TutorialZG.html
+- M. Zacharias and F. Giustino, *Phys. Rev. Research* **2**, 013357 (2020) 
+- M. Zacharias and F. Giustino, *Phys. Rev. B* **94**, 075125 (2016)
+- M. Zacharias *et al.*, *Phys. Rev. B* **108**, 035155 (2023) — Anharmonic SDM (ASDM)
 
 ---
 
@@ -295,8 +289,7 @@ https://docs.epw-code.org/doc/TutorialZG.html
 If you use these files or adapt this workflow, please cite:
 
 ```
-J. H. Sagor et al., "Temperature-dependent dielectric function of graphene from
-first principles including anharmonic effects", (under review, 2026).
+J. H. Sagor et al., "Effect of Temperature-Induced Dielectric Response on Radiative Heat Transfer in the Extreme Near-Field Regime", (under review, PRB, 2026).
 
 J. H. Sagor, Graphene-temperature-dependent-dielectric-function, GitHub repository (2026),
 https://github.com/jahidhasans/Graphene-temperature-dependent-dielectric-function
