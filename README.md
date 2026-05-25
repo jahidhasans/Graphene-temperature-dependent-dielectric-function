@@ -68,7 +68,7 @@ Graphene-temperature-dependent-dielectric-function/
 │   ├── FORCE_CONSTANTS_750.00K_iter_0{1..4}      # Raw IFCs per iteration
 │   ├── FORCE_CONSTANTS_sym_750.00K_iter_0{1..4}  # Symmetrized IFCs per iteration
 │   ├── 750.00K_iter_0{1..4}.fc       # IFCs in q2r.x format (input for next iteration)
-│   ├── ZG_1.in / ZG_2.in             # ZG.x input files for A-SDM iterations
+│   ├── ZG_1.in / ZG_2.in             # ZG.x input files for ASDM iterations
 │   ├── ZG-scf_441_750.00K.in         # SCF input for the initial ZG configuration
 │   ├── ZG-scf_750.00K_iter_01.in     # SCF input for finite-difference displacements
 │   ├── gr_01_441.freq / gr_04_441.freq          # Phonon frequencies (iter 1 and 4)
@@ -89,8 +89,8 @@ Graphene-temperature-dependent-dielectric-function/
 │   └── gr.441all.fc                  # Copy of harmonic IFCs for scripts
 │
 └── Yambo/                            # Yambo inputs and helper scripts
-    ├── yambo_epsilon_input.in        # Main Yambo input for dielectric function ε(ω)
-    ├── yambo_alpha_input.in          # Yambo input for polarizability α(ω)
+    ├── yambo_epsilon_input.in        # Main Yambo input for dielectric function ε(ω,q,T)
+    ├── yambo_alpha_input.in          # Yambo input for polarizability α(ω,q,T)
     ├── double_grid_mapping.in        # Double-grid (fine k-grid) mapping input
     ├── r_setup                       # Yambo setup/initialization file
     ├── Double_grid_yambo_run.slurm   # SLURM script for double-grid Yambo run
