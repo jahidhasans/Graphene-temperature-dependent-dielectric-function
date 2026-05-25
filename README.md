@@ -16,7 +16,7 @@ This repository contains the input files, force-constant data, post-processing s
 4. [Workflow Overview](#4-workflow-overview)
    - [Step 1 — Ground-state DFT (QE)](#step-1--ground-state-dft-qe)
    - [Step 2 — Harmonic Force Constants (QE)](#step-2--harmonic-force-constants-qe)
-   - [Step 3 — Anharmonic Phonons via A-SDM (ZG.x)](#step-3--anharmonic-phonons-via-a-sdm-zgx)
+   - [Step 3 — Anharmonic Phonons via ASDM (ZG.x)](#step-3--anharmonic-phonons-via-asdm-zgx)
    - [Step 4 — Non-self-consistent Calculation on ZG Configuration](#step-4--non-self-consistent-calculation-on-zg-configuration)
    - [Step 5 — Dielectric Function (Yambo)](#step-5--dielectric-function-yambo)
 5. [Plotting and Post-processing](#6-plotting-and-post-processing)
